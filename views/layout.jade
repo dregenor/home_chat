@@ -1,0 +1,28 @@
+!!!
+html
+	head
+		title= title
+		link(rel='stylesheet', href='/stylesheets/style.css')
+		script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js")
+		script(src="/socket.io/socket.io.js")
+		script
+			$(document).ready(function() {
+				$.socket = io.connect('http://dregenor.dyndns.org');
+				var socket = $.socket;
+				socket.on('newmsg',function(data){
+					$('.messages').prepend($('<span></span>').text(data).html()+'<br>');
+				});
+				socket.on('history',function(data){
+					$.each(data, function(index, value) { 
+						$('.messages').prepend($('<span></span>').text(value).html()+'<br>');
+					});
+				});
+				$('.chatForm').submit(function(){
+					var socket = $.socket;
+					var msg = $('.message').val();
+					socket.emit('msg',msg);
+					$('.message').val('');
+					return false;
+				});
+			});
+	body!= body
